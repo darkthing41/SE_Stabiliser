@@ -6,8 +6,9 @@ using System.Text;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
 //using Sandbox.Common.ObjectBuilders;
-using VRageMath;
 using VRage;
+using VRage.Game.ModAPI.Ingame;
+using VRageMath;
 
 namespace SpaceEngineersScripting
 {
@@ -233,6 +234,7 @@ namespace SpaceEngineersScripting
 					&& controllerRoll.TryRestore( elements[2] );
 			}
 		}
+
 
 		//Global variables
 		//--------------------
