@@ -35,6 +35,3 @@ Attempts to keep pitch and roll of the ship at 0
 + `PID`: PID data, logic, storage for stabilising forces
 + `ValidateBlock()`: check that found blocks are usable
 + Status/Initialise/Validate framework
-
-##"Undocumented"
-+ Writes status to IMyTextPanel named `Display`

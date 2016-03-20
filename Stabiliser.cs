@@ -44,23 +44,13 @@ namespace SpaceEngineersScripting
 		//Opcodes for use as arguments
 		//-commands may be issued directly
 		const string
-			command_init = "Init";   //args: <none>
+			command_Initialise = "Init";   //args: <none>
 
 		//Utility definitions
 		static double AngleBetween (Vector3D a, Vector3D b){
 			return Math.Acos( Vector3D.Dot(a, b) / (a.Length() * b.Length()) );
 			//MyMath.AngleBetween(a,b)
 		}
-
-//		static double AngleBetween2 (Vector3D a, Vector3D b, Vector3D reference){
-//			double angle = Math.Acos( Vector3D.Dot(a, b) / (a.Length() * b.Length()) );
-//			Vector3D p = Vector3D.Cross (a, b);
-//
-//			if (Vector3D.Dot (p, reference) < 0)
-//				return -angle;
-//			else
-//				return angle;
-//		}
 
 		static double NormaliseRadians (double angle){
 			//Limit to within range of
@@ -280,7 +270,7 @@ namespace SpaceEngineersScripting
 				Storage = null;	//will be resaved iff initialisation is successful
 				restarted = false;
 			}
-			if ( !status.initialised || argument == "Init") {
+			if ( !status.initialised || argument == command_Initialise) {
 				//if we cannot initialise, end here
 				if ( !Initialise() )
 					return;
@@ -292,7 +282,7 @@ namespace SpaceEngineersScripting
 					return;
 			}
 
-			if (argument == "Init") {
+			if (argument == command_Initialise) {
 				Echo ("resetting.");
 				status.Initialise ();
 			}
@@ -305,18 +295,22 @@ namespace SpaceEngineersScripting
 
 				Update ();
 
-				var temp = ((IMyTextPanel)GridTerminalSystem.GetBlockWithName ("Display"));
-				if (temp != null) {
-					temp.WritePublicText ( String.Format(
-						"p: {0,-08:F}\nr: {1,-08:F}\n\ncp: {2,-08:F}\ncr: {3,-08:F}",
-						pitch*180 / Math.PI,
-						roll*180 / Math.PI,
-						correctionPitch,
-						correctionRoll
-					));
-				}
-
+				//var temp = ((IMyTextPanel)GridTerminalSystem.GetBlockWithName ("Display"));
+				//if (temp != null) {
+				//	temp.WritePublicText ( String.Format(
+				//		"p: {0,-08:F}\nr: {1,-08:F}\n\ncp: {2,-08:F}\ncr: {3,-08:F}",
+				//		pitch*180 / Math.PI,
+				//		roll*180 / Math.PI,
+				//		correctionPitch,
+				//		correctionRoll
+				//	));
+				//}
 			}
+
+			//Echo system status
+			Echo ("inv: " +inverted.ToString() );
+			Echo ("pitch: " +(pitch*180 / Math.PI).ToString() );
+			Echo ("roll: " +(roll*180 / Math.PI).ToString() );
 
 			//Save current status
 			Storage = status.Store();
@@ -377,12 +371,6 @@ namespace SpaceEngineersScripting
 				cRoll = correctionRoll *10;
 
 			SetUpGyro( gyro, cPitch, cRoll, 0.0f );
-
-
-			//Echo ("g: " +gravity.Length().ToString() +": " +gravity.ToString() );
-			Echo ("inv: " +inverted.ToString() );
-			Echo ("pitch: " +(pitch*180 / Math.PI).ToString() );
-			Echo ("roll: " +(roll*180 / Math.PI).ToString() );
 		}
 
 
