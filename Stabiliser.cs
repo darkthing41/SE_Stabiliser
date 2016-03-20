@@ -474,7 +474,7 @@ namespace SpaceEngineersScripting
 		}
 
 
-		private bool ValidateBlock(IMyTerminalBlock block)
+		private bool ValidateBlock(IMyTerminalBlock block, bool callbackRequired=true)
 		{
 			//check for block deletion?
 
@@ -485,7 +485,7 @@ namespace SpaceEngineersScripting
 			}
 
 			//check that the block has required permissions to make callbacks
-			if ( ! block.HasPlayerAccess(Me.OwnerId) ) {
+			if ( callbackRequired && !block.HasPlayerAccess(Me.OwnerId) ) {
 				Echo ("ERROR: no permissions on \"" +block.CustomName +"\"");
 				return false;
 			}
@@ -502,8 +502,8 @@ namespace SpaceEngineersScripting
 
 		private bool Validate(){
 			bool valid =
-				ValidateBlock (remoteControl) &
-				ValidateBlock (gyro);
+				ValidateBlock (remoteControl, callbackRequired:false) &
+				ValidateBlock (gyro, callbackRequired:false);
 
 			if ( !valid ) {
 				Echo ("Validation of saved blocks failed.");
