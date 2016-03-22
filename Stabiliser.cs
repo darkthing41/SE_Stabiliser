@@ -38,6 +38,7 @@ namespace SpaceEngineersScripting
 			shipOrientation = new MyBlockOrientation
 			        (Base6Directions.Direction.Forward, Base6Directions.Direction.Up);
 
+
 		//Definitions
 		//--------------------
 
@@ -292,7 +293,6 @@ namespace SpaceEngineersScripting
 				status.count = 0;
 
 				//Perform main processing
-
 				Update ();
 
 				//var temp = ((IMyTextPanel)GridTerminalSystem.GetBlockWithName ("Display"));
@@ -418,6 +418,29 @@ namespace SpaceEngineersScripting
 		}
 
 
+		private bool FindBlock<BlockType>(out BlockType block, string nameBlock, ref List<IMyTerminalBlock> temp)
+				where BlockType : class, IMyTerminalBlock
+		{
+			block = null;
+			GridTerminalSystem.GetBlocksOfType<BlockType> (temp);
+			for (int i=0; i<temp.Count; i++){
+				if (temp[i].CustomName == nameBlock) {
+					if (block == null) {
+						block = (BlockType)temp[i];
+					} else {
+						Echo ("ERROR: duplicate name \"" +nameBlock +"\"");
+						return false;
+					}
+				}
+			}
+			//verify that the block was found
+			if (block == null) {
+				Echo ("ERROR: block not found \"" +nameBlock +"\"");
+				return false;
+			}
+			return true;
+		}
+
 		private bool Initialise()
 		{
 			status.initialised = false;
@@ -425,48 +448,15 @@ namespace SpaceEngineersScripting
 
 			var temp = new List<IMyTerminalBlock>();
 
-			//Find Remote Control
-			remoteControl = null;
-			GridTerminalSystem.GetBlocksOfType<IMyRemoteControl> (temp);
-			for (int i=0; i < temp.Count; i++){
-				if (temp[i].CustomName == nameRemoteControl) {
-					if (remoteControl == null) {
-						remoteControl = (IMyRemoteControl)temp[i];
-					} else {
-						Echo ("ERROR: duplicate name \"" +nameRemoteControl +"\"");
-						return false;
-					}
-				}
-			}
-			//verify that the remote control was found
-			if (remoteControl == null) {
-				Echo ("ERROR: block not found \"" +nameRemoteControl +"\"");
+			//Find Remote Control and verify that it is operable
+			if ( !( FindBlock<IMyRemoteControl>(out remoteControl, nameRemoteControl, ref temp)
+			        && ValidateBlock(remoteControl, callbackRequired:false) ))
 				return false;
-			}
-			//validate that the remote control is operable
-			if ( ! ValidateBlock (remoteControl) ) return false;
 
-			//Find Gyro
-			gyro = null;
-			GridTerminalSystem.GetBlocksOfType<IMyGyro> (temp);
-			for (int i=0; i < temp.Count; i++){
-				if (temp[i].CustomName == nameGyro) {
-					if (gyro == null) {
-						gyro = (IMyGyro)temp[i];
-					} else {
-						Echo ("ERROR: duplicate name \"" +nameGyro +"\"");
-						return false;
-					}
-				}
-			}
-			//verify that the remote control was found
-			if (gyro == null) {
-				Echo ("ERROR: block not found \"" +nameGyro +"\"");
+			//Find Gyro and verify that it is operable
+			if ( !( FindBlock<IMyGyro>(out gyro, nameGyro, ref temp)
+			        && ValidateBlock(gyro, callbackRequired:false) ))
 				return false;
-			}
-			//validate that the remote control is operable
-			if ( ! ValidateBlock (gyro) ) return false;
-
 
 			status.initialised = true;
 			Echo ("Initialisation completed with no errors.");
