@@ -449,7 +449,7 @@ namespace SpaceEngineersScripting
 
 			var temp = new List<IMyTerminalBlock>();
 
-			//Find Remote Control and verify that it is operable
+			//Find Controller and verify that it is operable
 			if ( !( FindBlock<IMyShipController>(out controller, nameController, ref temp)
 			        && ValidateBlock(controller, callbackRequired:false) ))
 				return false;

@@ -21,11 +21,11 @@ Attempts to keep pitch and roll of the ship at 0
 ##Hardware
 | Block(s)      | number        | Configurable  |
 | ------------- | ------------- | ------------- |
-| Remote Control| single        | by name constant
+| Ship Controller | single        | by name constant
 | Gyroscope     | single        | by name constant
 
 ##Configuration
-+ `nameRemoteControl`: the name of the Remote Control used to identify the main grid and get local gravity
++ `nameController`: the name of the Remote Control used to identify the main grid and get local gravity
 + `nameGyro`: the name of the Gyroscope that will have the override speeds set to stabilize the ship.
 + `period`: ticks between processing taking place
 + `shipOrientation`: orientation of the ship compared to the grid
