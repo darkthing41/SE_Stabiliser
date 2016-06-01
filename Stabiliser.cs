@@ -5,7 +5,8 @@ using System.Linq;
 using System.Text;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
-//using Sandbox.Common.ObjectBuilders;
+using SpaceEngineers.Game.ModAPI;
+using SpaceEngineers.Game.ModAPI.Ingame;
 using VRage;
 using VRage.Game.ModAPI.Ingame;
 using VRageMath;
@@ -28,7 +29,7 @@ namespace SpaceEngineersScripting
 		//Configuration
 		//--------------------
 		const string
-			nameRemoteControl = "Remote Control",
+			nameController = "Remote Control",
 			nameGyro = "Gyroscope Override";
 
 		const int
@@ -232,7 +233,7 @@ namespace SpaceEngineersScripting
 		bool restarted = true;
 		Status status;
 
-		IMyRemoteControl remoteControl;
+		IMyShipController controller;
 		IMyGyro gyro;
 
 		bool
@@ -326,12 +327,12 @@ namespace SpaceEngineersScripting
 			//  >find local gravity vector (to define "level")
 			//  >transform our cardinal directions into the same vector space as gravity
 			Vector3D
-				worldGravity = remoteControl.GetNaturalGravity ();
+				worldGravity = controller.GetNaturalGravity ();
 
 			Vector3D
-				worldForward = GridToWorld (Base6Directions.GetIntVector(shipForward), remoteControl.CubeGrid),
-				worldLeft = GridToWorld (Base6Directions.GetIntVector(shipLeft), remoteControl.CubeGrid),
-				worldUp = GridToWorld (Base6Directions.GetIntVector(shipUp), remoteControl.CubeGrid);
+				worldForward = GridToWorld (Base6Directions.GetIntVector(shipForward), controller.CubeGrid),
+				worldLeft = GridToWorld (Base6Directions.GetIntVector(shipLeft), controller.CubeGrid),
+				worldUp = GridToWorld (Base6Directions.GetIntVector(shipUp), controller.CubeGrid);
 
 			//-Calculate angles between gravity and our axes
 			//  >calculate basic angle between gravity and axes
@@ -449,8 +450,8 @@ namespace SpaceEngineersScripting
 			var temp = new List<IMyTerminalBlock>();
 
 			//Find Remote Control and verify that it is operable
-			if ( !( FindBlock<IMyRemoteControl>(out remoteControl, nameRemoteControl, ref temp)
-			        && ValidateBlock(remoteControl, callbackRequired:false) ))
+			if ( !( FindBlock<IMyShipController>(out controller, nameController, ref temp)
+			        && ValidateBlock(controller, callbackRequired:false) ))
 				return false;
 
 			//Find Gyro and verify that it is operable
@@ -492,7 +493,7 @@ namespace SpaceEngineersScripting
 
 		private bool Validate(){
 			bool valid =
-				ValidateBlock (remoteControl, callbackRequired:false) &
+				ValidateBlock (controller, callbackRequired:false) &
 				ValidateBlock (gyro, callbackRequired:false);
 
 			if ( !valid ) {
